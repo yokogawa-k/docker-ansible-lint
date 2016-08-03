@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+NAME="ansible-lint"
+IMAGE_NAME=yokogawa/${NAME}
+docker ps --quiet --all --filter name=${NAME} | xargs -r docker rm >/dev/null
+
+set -x
+if [ "${1}" = "bash" ]; then
+    docker run -v ${PWD}:/work -i -t --entrypoint="/bin/bash" --name=${NAME} ${IMAGE_NAME}
+else
+    docker run -v ${PWD}:/work -w /work --name=${NAME} ${IMAGE_NAME} $@
+fi
+
+
