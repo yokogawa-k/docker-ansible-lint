@@ -21,6 +21,5 @@ RUN apk add --no-cache --virtual .build-deps \
  && apk del .build-deps \
  && rm -rf ~/.cache/
 
-ENTRYPOINT ["ansible-lint"]
-CMD ["--help"]
+CMD ["ansible-lint", "--help"]
 
