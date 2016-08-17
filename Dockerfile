@@ -21,5 +21,7 @@ RUN apk add --no-cache --virtual .build-deps \
  && apk del .build-deps \
  && rm -rf ~/.cache/
 
+ENV ANSIBLE_LOCAL_TEMP /tmp
+WORKDIR /work
 CMD ["ansible-lint", "--help"]
 
