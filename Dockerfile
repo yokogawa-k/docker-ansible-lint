@@ -3,7 +3,7 @@ FROM python:2.7-alpine
 
 ENV VERSION "3.4.16"
 RUN apk add --no-cache git \
-    apk add --no-cache --virtual .build-deps \
+ && apk add --no-cache --virtual .build-deps \
     make \
     gcc \
     libc-dev \
