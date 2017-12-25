@@ -94,6 +94,9 @@ workflows:
     triggers:
       - schedule:
           cron: "50 * * * *"
+          filters:
+            branches:
+              only: master
     jobs:
       - create-pull-request
 
