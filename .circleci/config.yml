@@ -56,7 +56,7 @@ jobs:
           name: setup command
           command: |
             curl -sL https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - hub-linux-amd64-2.2.9/bin/hub
-            apt-get update && apt-get install jq
+            apt-get update && apt-get -y install jq
       - run:
           name: compare tags
           command: |
@@ -93,7 +93,7 @@ workflows:
   scheduled-workflow:
     triggers:
       - schedule:
-          cron: "1 * * * *"
+          cron: "5 * * * *"
           filters:
             branches:
               only: master
