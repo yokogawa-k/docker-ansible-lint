@@ -46,4 +46,54 @@ jobs:
       #        docker tag app "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
       #        docker push "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
       #      fi
+  create-pull-request:
+    working_directory: /app/docker-ansible-lint
+    docker:
+      - image: golang
+    steps:
+      - checkout
+      - run:
+          name: setup hub command
+          command:
+            if [[ -d bin ]]; then
+              curl -sL https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - bin/hub
+            fi
+      - run:
+          name: compare tags
+          command: |
+            for tag in $(curl -sL https://api.github.com/repos/willthames/ansible-lint/tags | jq -r ".[].name"); do
+              case ${tag} in
+                v3.2.*) :;;
+                v3.3.*) :;;
+                v3.4.?rc*) :;;
+                v3.4.?) :;;
+                v3.4.1?) :;;
+                *)
+                  if [[ $(git tag -l ${tag}) ]]; then
+                    :
+                  else
+                    wget https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz
+                    VERSION=${tag#v}
+                    sed -ie "s/ENV VERSION .*/ENV VERSION ${VERSION}/" Dockerfile
+                    git checkout -b update_${VERSION}
+                    git add Dockerfile
+                    git commit -m "Update version to ${VERSION}"
+                    hub pull-request -m "$(git log -1 --pretty=%B)"
+                    git checkout master
+                  fi
+                  ;;
+              esac
+            done
+
+workflows:
+  version: 2
+  commit-workflow:
+    jobs:
+      - build
+  scheduled-workflow:
+    triggers:
+      - schedule:
+          cron: "50 * * * *"
+    jobs:
+      - create-pull-request
 
