@@ -55,7 +55,7 @@ jobs:
       - run:
           name: setup command
           command: |
-            curl -sL https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - bin/hub
+            curl -sL https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - hub-linux-amd64-2.2.9/bin/hub
             apt-get update && apt-get install jq
       - run:
           name: compare tags
@@ -71,12 +71,13 @@ jobs:
                   if [[ $(git tag -l ${tag}) ]]; then
                     :
                   else
-                    wget https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz
                     VERSION=${tag#v}
                     sed -ie "s/ENV VERSION .*/ENV VERSION ${VERSION}/" Dockerfile
                     git checkout -b update_${VERSION}
                     git add Dockerfile
                     git commit -m "Update version to ${VERSION}"
+                    git push -u origin update_${VERSION}
+                    git tag ${tag}
                     hub pull-request -m "$(git log -1 --pretty=%B)"
                     git checkout master
                   fi
@@ -92,7 +93,7 @@ workflows:
   scheduled-workflow:
     triggers:
       - schedule:
-          cron: "55 * * * *"
+          cron: "1 * * * *"
           filters:
             branches:
               only: master
