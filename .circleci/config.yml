@@ -71,12 +71,18 @@ jobs:
                   if [[ $(git tag -l ${tag}) ]]; then
                     :
                   else
-                    VERSION=${tag#v}
-                    sed -ie "s/ENV VERSION .*/ENV VERSION ${VERSION}/" Dockerfile
-                    git checkout -b update_${VERSION}
+                    export ANSIBLE_VERSION=${tag#v}
+                    export GIT_COMMITTER_NAME=yokogawa-k
+                    export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
+                    export GIT_AUTHOR_NAME=${GIT_COMMITTER_NAME}
+                    export GIT_AUTHOR_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
+                    export GIT_SSH_COMMAND='ssh -o IdentitiesOnly=yes -i ~/.ssh/id_rsa'
+
+                    sed -ie "s/ENV VERSION .*/ENV VERSION ${ANSIBLE_VERSION}/" Dockerfile
+                    git checkout -b update_${ANSIBLE_VERSION}
                     git add Dockerfile
-                    git commit -m "Update version to ${VERSION}"
-                    git push -u origin update_${VERSION}
+                    git commit -m "Update version to ${ANSIBLE_VERSION}"
+                    git push -u origin update_${ANSIBLE_VERSION}
                     git tag ${tag}
                     hub pull-request -m "$(git log -1 --pretty=%B)"
                     git checkout master
@@ -93,7 +99,7 @@ workflows:
   scheduled-workflow:
     triggers:
       - schedule:
-          cron: "5 * * * *"
+          cron: "9 * * * *"
           filters:
             branches:
               only: master
