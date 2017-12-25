@@ -10,7 +10,7 @@
 $ docker run --rm yokogawa/ansible-lint
 ```
 
-#### exsample
+#### example
 
 with find
 ```console
