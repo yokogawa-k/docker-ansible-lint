@@ -54,7 +54,7 @@ jobs:
       - checkout
       - run:
           name: setup hub command
-          command:
+          command: |
             if [[ -d bin ]]; then
               curl -sL https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - bin/hub
             fi
