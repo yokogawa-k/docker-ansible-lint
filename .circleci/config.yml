@@ -83,6 +83,8 @@ jobs:
                     git commit -m "Update version to ${ANSIBLE_VERSION}"
                     git push origin update_${ANSIBLE_VERSION}
                     git tag ${tag}
+                    # pull-request from yokogawa-k-bot
+                    export GITHUB_USER=yokogawa-k-bot
                     hub pull-request -m "$(git log -1 --pretty=%B)"
                     git checkout master
                   fi
