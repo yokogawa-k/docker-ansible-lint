@@ -14,7 +14,7 @@ $ docker run --rm yokogawa/ansible-lint
 
 with find
 ```console
-$ docker run --rm -v ${PWD}:/work -w /work yokogawa/ansible-lint sh -c 'find . -name "*.yml" | xargs -r ansible-lint --force-color
+$ docker run --rm -v ${PWD}:/work -w /work yokogawa/ansible-lint sh -c 'find . -name "*.yml" | xargs -r ansible-lint --force-color'
 ```
 
 with git ls-files
