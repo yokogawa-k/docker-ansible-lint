@@ -1,7 +1,7 @@
 FROM python:2.7-alpine
 # ansible-lint use `except foo, e` syntax...
 
-ENV VERSION 3.5.1
+ENV VERSION 4.0.0a0
 RUN apk add --no-cache git \
  && apk add --no-cache --virtual .build-deps \
     make \
