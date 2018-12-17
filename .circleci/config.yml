@@ -98,9 +98,9 @@ jobs:
                     export GIT_AUTHOR_NAME=${GIT_COMMITTER_NAME}
                     export GIT_AUTHOR_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
 
-                    sed -i -e "s/ENV VERSION .*/ENV VERSION ${ANSIBLE_VERSION}/" Dockerfile
+                    sed -i -e "s/ansible-lint == .*/ansible-lint == ${ANSIBLE_VERSION}/" requirements.txt
                     git checkout -b update_${ANSIBLE_VERSION}
-                    git add Dockerfile
+                    git add requirements.txt
                     git commit -m "Update version to ${ANSIBLE_VERSION}"
                     git push origin update_${ANSIBLE_VERSION}
                     git tag ${tag}
