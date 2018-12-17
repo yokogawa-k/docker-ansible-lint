@@ -1,6 +1,8 @@
-# Docker Image for [willthames/ansible-lint](https://github.com/willthames/ansible-lint)
+# Docker Image for [ansible/ansible\-lint](https://github.com/ansible/ansible-lint)
 
 [![CircleCI](https://circleci.com/gh/yokogawa-k/docker-ansible-lint/tree/master.svg?style=svg)](https://circleci.com/gh/yokogawa-k/docker-ansible-lint/tree/master)
+[![](https://images.microbadger.com/badges/image/yokogawa/ansible-lint.svg)](https://microbadger.com/images/yokogawa/ansible-lint "Get your own image badge on microbadger.com")
+
 
 ## Usage
 
