@@ -1,7 +1,7 @@
 FROM python:2.7-alpine
 # ansible-lint use `except foo, e` syntax...
 
-ENV VERSION 3.5.1
+COPY requirements.txt /
 RUN apk add --no-cache git \
  && apk add --no-cache --virtual .build-deps \
     make \
@@ -10,7 +10,7 @@ RUN apk add --no-cache git \
     openssl-dev \
     python-dev \
     libffi-dev \
- && pip install ansible-lint==${VERSION} \
+ && pip install -r requirements.txt \
  && runDeps="$( \
       scanelf --needed --nobanner --recursive /usr/local \
       | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
