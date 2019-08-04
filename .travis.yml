@@ -1,0 +1,17 @@
+language: bash
+services: docker
+
+matrix:
+  include:
+    - os: linux
+      env: PYTHON_VERSION=2.7
+    - os: linux
+      env: PYTHON_VERSION=3.6
+
+before_script:
+  - image="ansible-lint:py${PYTHON_VERSION}"
+
+script:
+  - docker build --build-arg python_version=${PYTHON_VERSION} -t "$image"  .
+after_script:
+  - docker images

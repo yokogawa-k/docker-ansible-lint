@@ -1,4 +1,5 @@
-FROM python:2.7-alpine
+ARG python_version
+FROM python:${python_version}-alpine
 # ansible-lint use `except foo, e` syntax...
 
 COPY requirements.txt /
