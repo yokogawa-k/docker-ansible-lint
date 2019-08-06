@@ -22,11 +22,11 @@ jobs:
       - run:
           name: Build ansible-lint Docker image (python2)
           command: |
-            docker build --cache-from=ansible-lint-python2 -t yokogawa/ansible-lint:ptyhon2 python2/
+            docker build --cache-from=ansible-lint-python2 -t yokogawa/ansible-lint:python2 python2/
       - run:
           name: Build ansible-lint Docker image (python3)
           command: |
-            docker build --cache-from=ansible-lint-python3 -t yokogawa/ansible-lint:ptyhon3 python3/
+            docker build --cache-from=ansible-lint-python3 -t yokogawa/ansible-lint:python3 python3/
       - run:
           name: Run ansible-lint (test)
           command: |
