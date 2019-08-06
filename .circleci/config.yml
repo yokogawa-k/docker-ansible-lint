@@ -5,127 +5,50 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:17.09.0-ce-git
+      - image: docker:19.03
     steps:
       - checkout
       - setup_remote_docker
       - restore_cache:
           keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/ansible-lint.tar
+            - v1-python2-{{ .Branch }}
+            - v1-python3-{{ .Branch }}
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/ansible-lint.tar | true
+            docker load -i /caches/ansible-lint-python2.tar | true
+            docker load -i /caches/ansible-lint-python3.tar | true
       - run:
-          name: Build ansible-lint Docker image
+          name: Build ansible-lint Docker image (python2)
           command: |
-            docker build --cache-from=ansible-lint -t yokogawa/ansible-lint .
+            DOCKER_BUILDKIT=1 docker build --cache-from=ansible-lint-python2 -t yokogawa/ansible-lint:ptyhon2 python2/
+      - run:
+          name: Build ansible-lint Docker image (python3)
+          command: |
+            DOCKER_BUILDKIT=1 docker build --cache-from=ansible-lint-python3 -t yokogawa/ansible-lint:ptyhon3 python3/
+      - run:
+          name: Run ansible-lint (test)
+          command: |
+            docker run -it --rm yokogawa/ansible-lint:python2 ansible-lint --version
+            docker run -it --rm yokogawa/ansible-lint:python3 ansible-lint --version
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/ansible-lint.tar yokogawa/ansible-lint
+            docker save -o /caches/ansible-lint-python2.tar yokogawa/ansible-lint:python2
+            docker save -o /caches/ansible-lint-python3.tar yokogawa/ansible-lint:python3
       - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
+          key: v1-python2-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/ansible-lint.tar
-      - run:
-          name: Run ansible-lint (test)
-          command: |
-            docker run -it --rm yokogawa/ansible-lint ansible-lint --version
-      # use docker cloud/hub
-      #- deploy:
-      #    name: Push application Docker image
-      #    command: |
-      #      if [ "${CIRCLE_BRANCH}" == "master" ]; then
-      #        login="$(aws ecr get-login)"
-      #        ${login}
-      #        docker tag app "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
-      #        docker push "${ECR_ENDPOINT}/app:${CIRCLE_SHA1}"
-      #      fi
-  create-pull-request:
-    working_directory: /app/docker-ansible-lint
-    docker:
-      - image: golang
-    steps:
-      - checkout
-      - run:
-          name: setup command
-          command: |
-            curl -sL https://github.com/github/hub/releases/download/v2.2.9/hub-linux-amd64-2.2.9.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - hub-linux-amd64-2.2.9/bin/hub
-            apt-get update && apt-get -y install jq
-      - add_ssh_keys:
-          fingerprints:
-            - "cd:68:2a:01:32:74:60:df:6d:94:08:d7:cd:a9:27:8a"
-      - run:
-          name: compare tags
-          command: |
-            for tag in $(curl -sL https://api.github.com/repos/willthames/ansible-lint/tags | jq -r ".[].name"); do
-              case ${tag} in
-                v3.2.*) :;;
-                v3.3.*) :;;
-                v3.4.?rc*) :;;
-                v3.4.?) :;;
-                v3.4.1?) :;;
-                *rc*)
-                  if [[ $(git tag -l ${tag}) ]]; then
-                    :
-                  else
-                    export ANSIBLE_VERSION=${tag#v}
-                    export GIT_COMMITTER_NAME=yokogawa-k
-                    export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
-                    export GIT_AUTHOR_NAME=${GIT_COMMITTER_NAME}
-                    export GIT_AUTHOR_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
-
-                    sed -i -e "s/ENV VERSION .*/ENV VERSION ${ANSIBLE_VERSION}/" Dockerfile
-                    git checkout -b update_${ANSIBLE_VERSION}
-                    git add Dockerfile
-                    git commit -m "Update version to ${ANSIBLE_VERSION}"
-                    git tag ${tag}
-                    git push origin ${tag}
-                  fi
-                  ;;
-                *)
-                  if [[ $(git tag -l ${tag}) ]]; then
-                    :
-                  else
-                    export ANSIBLE_VERSION=${tag#v}
-                    export GIT_COMMITTER_NAME=yokogawa-k
-                    export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
-                    export GIT_AUTHOR_NAME=${GIT_COMMITTER_NAME}
-                    export GIT_AUTHOR_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
-
-                    sed -i -e "s/ansible-lint == .*/ansible-lint == ${ANSIBLE_VERSION}/" requirements.txt
-                    git checkout -b update_${ANSIBLE_VERSION}
-                    git add requirements.txt
-                    git commit -m "Update version to ${ANSIBLE_VERSION}"
-                    git push origin update_${ANSIBLE_VERSION}
-                    git tag ${tag}
-                    git push origin ${tag}
-                    # pull-request from yokogawa-k-bot
-                    export GITHUB_USER=yokogawa-k-bot
-                    hub pull-request -m "$(git log -1 --pretty=%B)"
-                    git checkout master
-                  fi
-                  ;;
-              esac
-            done
+            - /caches/ansible-lint-python2.tar
+      - save_cache:
+          key: v1-python3-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/ansible-lint-python3.tar
 
 workflows:
   version: 2
   commit-workflow:
     jobs:
       - build
-  scheduled-workflow:
-    triggers:
-      - schedule:
-          cron: "20 * * * *"
-          filters:
-            branches:
-              only: master
-    jobs:
-      - create-pull-request
-
