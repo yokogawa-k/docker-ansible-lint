@@ -17,7 +17,7 @@ ANSIBLE_LINT_VERSION=$(grep ansible-lint requirements.txt | cut -f 3 -d " ")
 
 # Tagging
 # exclude rc and alpha version(ex. v3.5.0rc1 v4.1.1a0 )
-if [[ ${ANSIBLE_LINT_VERSION} =~ [0-9.]+ ]]; then
+if [[ ${ANSIBLE_LINT_VERSION} =~ ^[0-9.]+$ ]]; then
   for tag in ${ANSIBLE_LINT_VERSION} ${ANSIBLE_LINT_VERSION}-python3 latest; do
     docker tag ${IMAGE_NAME} ${DOCKER_REPO}:${tag}
     docker push ${DOCKER_REPO}:${tag}
