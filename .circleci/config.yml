@@ -46,9 +46,69 @@ jobs:
           key: v1-python3-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/ansible-lint-python3.tar
+  create-pull-request:
+    working_directory: /app/docker-ansible-lint
+    docker:
+      - image: golang
+    steps:
+      - checkout
+      - run:
+          name: setup command
+          command: |
+            curl -sL https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz | tar xz -C /usr/local/bin --strip-components=2 -f - hub-linux-amd64-2.12.3/bin/hub
+            apt-get update && apt-get -y install jq
+      - add_ssh_keys:
+          fingerprints:
+            - "cd:68:2a:01:32:74:60:df:6d:94:08:d7:cd:a9:27:8a"
+      - run:
+          name: compare tags
+          command: |
+            for tag in $(curl -sL https://api.github.com/repos/willthames/ansible-lint/tags | jq -r ".[].name"); do
+              case ${tag} in
+                v3.2.*) :;;
+                v3.3.*) :;;
+                v3.4.?rc*) :;;
+                v3.4.?) :;;
+                v3.4.1?) :;;
+                *)
+                  if [[ $(git tag -l ${tag}) ]]; then
+                    :
+                  else
+                    export ANSIBLE_LINT_VERSION=${tag#v}
+                    export GIT_COMMITTER_NAME=yokogawa-k
+                    export GIT_COMMITTER_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
+                    export GIT_AUTHOR_NAME=${GIT_COMMITTER_NAME}
+                    export GIT_AUTHOR_EMAIL="${GIT_COMMITTER_NAME}@klab.com"
+
+                    sed -i -e "s/ansible-lint == .*/ansible-lint == ${ANSIBLE_LINT_VERSION}/" python3/requirements.txt
+                    sed -i -e "s/ansible-lint == .*/ansible-lint == ${ANSIBLE_LINT_VERSION}/" python2/requirements.txt
+                    git checkout -b update_to_${ANSIBLE_LINT_VERSION}
+                    git add python3/requirements.txt python2/requirements.txt
+                    git commit -m "Update version to ${ANSIBLE_LINT_VERSION}"
+                    git push origin update_to_${ANSIBLE_LINT_VERSION}
+                    git tag ${tag}
+                    git push origin ${tag}
+                    # pull-request from yokogawa-k-bot
+                    export GITHUB_USER=yokogawa-k-bot
+                    hub pull-request -m "$(git log -1 --pretty=%B)"
+                    git checkout master
+                  fi
+                  ;;
+              esac
+            done
+
 
 workflows:
   version: 2
   commit-workflow:
     jobs:
       - build
+  scheduled-workflow:
+    triggers:
+      - schedule:
+          cron: "20 * * * *"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - create-pull-request
