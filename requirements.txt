@@ -1,4 +1,1 @@
 ansible-lint == 4.1.0
-# https://pypi.org/project/ruamel.yaml/
-# For production systems you should pin the version being used with ``ruamel.yaml<=0.15``
-ruamel.yaml <= 0.15
