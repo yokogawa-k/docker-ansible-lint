@@ -11,7 +11,7 @@ docker run -itd --init --rm --name ansible-lint yokogawa/ansible-lint sleep 600
 
 echo "Check python version"
 RESULT=$(docker exec ansible-lint python -c 'import sys; print(sys.version_info.major)')
-echo "Want: 3"
+echo "Want:   3"
 echo "Reuslt: ${RESULT}"
 if [ "${RESULT}" -eq 3 ]; then
   :
@@ -22,7 +22,7 @@ fi
 
 echo "Check ansible-lint version"
 RESULT=$(docker exec ansible-lint ansible-lint --version)
-echo "Want: ansible-lint ${ANSIBLE_LINT_VERSION}"
+echo "Want:   ansible-lint ${ANSIBLE_LINT_VERSION}"
 echo "Reuslt: ${RESULT}"
 if [ "${RESULT}" = "ansible-lint ${ANSIBLE_LINT_VERSION}" ]; then
   :
