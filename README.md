@@ -5,8 +5,7 @@
 
 ## Supported tags and respective `Dockerfile` links
 
-- [`python3`, `latest` (python3/Dockerfile)][ansible-lint-python3]
-- [`python2` (python2/Dockerfile)][ansible-lint-python2]
+- [`latest` (python3/Dockerfile)][ansible-lint]
 
 ## How to use this image
 
@@ -28,5 +27,4 @@ with git ls-files
 $ docker run --rm -v ${PWD}:/work -w /work yokogawa/ansible-lint sh -c 'git ls-files -z "*.yml" | xargs -r -0 ansible-lint'
 ```
 
-[ansible-lint-python3]: https://github.com/yokogawa-k/docker-ansible-lint/blob/master/python3/Dockerfile
-[ansible-lint-python2]: https://github.com/yokogawa-k/docker-ansible-lint/blob/master/python2/Dockerfile
+[ansible-lint]: https://github.com/yokogawa-k/docker-ansible-lint/blob/master/Dockerfile

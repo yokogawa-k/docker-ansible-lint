@@ -11,41 +11,29 @@ jobs:
       - setup_remote_docker
       - restore_cache:
           keys:
-            - v1-python2-{{ .Branch }}
-            - v1-python3-{{ .Branch }}
+            - v1-{{ .Branch }}
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/ansible-lint-python2.tar | true
-            docker load -i /caches/ansible-lint-python3.tar | true
+            docker load -i /caches/ansible-lint.tar | true
       - run:
-          name: Build ansible-lint Docker image (python2)
+          name: Build ansible-lint Docker image
           command: |
-            docker build --cache-from=ansible-lint-python2 -t yokogawa/ansible-lint:python2 python2/
-      - run:
-          name: Build ansible-lint Docker image (python3)
-          command: |
-            docker build --cache-from=ansible-lint-python3 -t yokogawa/ansible-lint:python3 python3/
+            docker build --cache-from=ansible-lint -t yokogawa/ansible-lint ./
       - run:
           name: Run ansible-lint (test)
           command: |
-            docker run -it --rm yokogawa/ansible-lint:python2 ansible-lint --version
-            docker run -it --rm yokogawa/ansible-lint:python3 ansible-lint --version
+            sh ./test/script.sh
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/ansible-lint-python2.tar yokogawa/ansible-lint:python2
-            docker save -o /caches/ansible-lint-python3.tar yokogawa/ansible-lint:python3
+            docker save -o /caches/ansible-lint.tar yokogawa/ansible-lint
       - save_cache:
-          key: v1-python2-{{ .Branch }}-{{ epoch }}
+          key: v1-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/ansible-lint-python2.tar
-      - save_cache:
-          key: v1-python3-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/ansible-lint-python3.tar
+            - /caches/ansible-lint.tar
 
 workflows:
   version: 2

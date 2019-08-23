@@ -1,5 +1,4 @@
-FROM python:2.7-alpine
-# ansible-lint use `except foo, e` syntax...
+FROM python:3-alpine
 
 COPY requirements.txt /
 RUN apk add --no-cache git \
