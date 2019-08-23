@@ -24,9 +24,7 @@ jobs:
       - run:
           name: Run ansible-lint (test)
           command: |
-            docker run -it --rm yokogawa/ansible-lint ansible-lint --version
-            docker run -it --rm -v ${PWD}:/work -w /work yokogawa/ansible-lint \
-              sh -c 'find ./test/success/ -name "*.yml" | xargs -r ansible-lint --force-color'
+            bash ./script.sh
       - run:
           name: Save Docker image layer cache
           command: |
