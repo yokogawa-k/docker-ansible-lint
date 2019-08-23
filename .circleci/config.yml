@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Run ansible-lint (test)
           command: |
-            sh ./script.sh
+            sh ./test/script.sh
       - run:
           name: Save Docker image layer cache
           command: |
