@@ -7,7 +7,6 @@ RUN apk add --no-cache git \
     gcc \
     libc-dev \
     openssl-dev \
-    python-dev \
     libffi-dev \
  && pip install -r requirements.txt \
  && runDeps="$( \
