@@ -1,6 +1,7 @@
 FROM python:3-alpine
 
 COPY requirements.txt /
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 RUN apk add --no-cache git \
  && apk add --no-cache --virtual .build-deps \
     make \
