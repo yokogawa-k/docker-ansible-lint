@@ -8,6 +8,7 @@ ANSIBLE_LINT_VERSION=$(grep ansible-lint requirements.txt | cut -f 3 -d " ")
 
 echo "Start test container"
 docker run -itd --init --rm --name ansible-lint yokogawa/ansible-lint sleep 600
+trap '{ docker stop ansible-lint; }' EXIT
 
 echo "Check python version"
 RESULT=$(docker exec ansible-lint python -c 'import sys; print(sys.version_info.major)')
@@ -37,4 +38,3 @@ docker exec ansible-lint sh -c 'set -o pipefail; find ./success/ -name "*.yml" |
 
 echo "!!! The test was successful !!!"
 
-docker stop ansible-lint
