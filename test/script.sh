@@ -23,9 +23,9 @@ fi
 
 echo "Check ansible-lint version"
 RESULT=$(docker exec ansible-lint ansible-lint --version)
-echo "Want:   ansible-lint ${ANSIBLE_LINT_VERSION}"
+echo "Want:   ansible-lint ${ANSIBLE_LINT_VERSION}.*"
 echo "Reuslt: ${RESULT}"
-if [ "${RESULT}" = "ansible-lint ${ANSIBLE_LINT_VERSION}" ]; then
+if [[ "${RESULT}" =~ ansible-lint\ ${ANSIBLE_LINT_VERSION}.* ]]; then
   :
 else
   echo "**Failed ansible-lint version check**"
