@@ -5,7 +5,7 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:19.03
+      - image: docker:20.10
     steps:
       - checkout
       - setup_remote_docker
@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Run ansible-lint (test)
           command: |
-            bash ./test/script.sh
+            sh ./test/script.sh
       - run:
           name: Save Docker image layer cache
           command: |
