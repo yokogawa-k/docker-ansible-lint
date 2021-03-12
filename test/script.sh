@@ -22,10 +22,11 @@ else
 fi
 
 echo "Check ansible-lint version"
-RESULT=$(docker exec ansible-lint ansible-lint --version)
-echo "Want:   ansible-lint ${ANSIBLE_LINT_VERSION}"
+RESULT=$(docker exec ansible-lint ansible-lint --version | cut -f-2 -d" ")
+EXPECT="ansible-lint ${ANSIBLE_LINT_VERSION}"
+echo "Want:   ${EXPECT}"
 echo "Reuslt: ${RESULT}"
-if [ "${RESULT}" = "ansible-lint ${ANSIBLE_LINT_VERSION}" ]; then
+if [ "${RESULT}" = "${EXPECT}" ]; then
   :
 else
   echo "**Failed ansible-lint version check**"
