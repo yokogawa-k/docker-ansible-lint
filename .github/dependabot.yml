@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  reviewers:
+  - yokogawa-k
+  labels:
+  - dependencies
+  ignore:
+  - dependency-name: ansible-lint[community]
+    versions:
+    - 5.0.2
+    - 5.0.6
+  - dependency-name: ansible-lint
+    versions:
+    - 5.0.0
