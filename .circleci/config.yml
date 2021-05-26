@@ -5,7 +5,7 @@ jobs:
   build:
     working_directory: /app
     docker:
-      - image: docker:19.03
+      - image: docker:20.10
     steps:
       - checkout
       - setup_remote_docker
