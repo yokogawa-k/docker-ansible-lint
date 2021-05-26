@@ -1,5 +1,8 @@
 # Corilus Docker Image for [ansible/ansible\-lint](https://github.com/ansible/ansible-lint)
 
+[![CircleCI](https://circleci.com/gh/Corilus/docker-ansible-lint/tree/master.svg?style=svg)](https://circleci.com/gh/Corilus/docker-ansible-lint/tree/master)
+[![Docker Pulls](https://img.shields.io/docker/pulls/corilus/ansible-lint?label=docker%20pulls)](https://hub.docker.com/r/corilus/ansible-lint)
+
 ## Supported tags and respective `Dockerfile` links
 
 - [`latest` (python3/Dockerfile)][ansible-lint]
