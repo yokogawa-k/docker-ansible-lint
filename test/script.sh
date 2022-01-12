@@ -13,7 +13,7 @@ trap '{ docker stop ansible-lint; }' EXIT
 echo "Check python version"
 RESULT=$(docker exec ansible-lint python -c 'import sys; print(sys.version_info.major)')
 echo "Want:   3"
-echo "Reuslt: ${RESULT}"
+echo "Result: ${RESULT}"
 if [ "${RESULT}" -eq 3 ]; then
   :
 else
