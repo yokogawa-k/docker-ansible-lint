@@ -1,1 +1,1 @@
-ansible-lint[community] == 5.3.2
+ansible-lint[community] == 5.4.0
