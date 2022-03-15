@@ -2,12 +2,12 @@
 # vi: set ts=2 sw=2 sts=0 et:
 
 ---
-# http://docs.ansible.com/ansible/latest/apt_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
 - name: Install Dependencies
-  apt:
+  ansible.builtin.apt:
     pkg: "{{ item }}"
     state: installed
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
   with_items:
     - acl
@@ -23,32 +23,14 @@
     - tmux
     - strace
     - vim
-  become: yes
+  become: true
   tags:
     - install_package
 
-# http://docs.ansible.com/ansible/latest/hostname_module.html
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/hostname_module.html
 - name: Setup hostname
-  hostname:
+  ansible.builtin.hostname:
     name: test-server
-  become: yes
+  become: true
   tags:
     - hostname
-
-# http://docs.ansible.com/ansible/latest/timezone_module.html
-- name: Setup timezone
-  timezone:
-    name: Asia/Tokyo
-  become: yes
-  tags:
-    - timezone
-
-# http://docs.ansible.com/ansible/latest/alternatives_module.html
-- name: Editor - Set alternative editor
-  alternatives:
-    name: editor
-    path: /usr/bin/vim.basic
-  become: yes
-  tags:
-    - editor
-

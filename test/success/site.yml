@@ -4,8 +4,8 @@
 ---
 - hosts: all
   user: admin
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   roles:
     - common
