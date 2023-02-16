@@ -1,1 +1,1 @@
-ansible-lint[community] == 6.12.2
+ansible-lint[community] == 6.13.0
