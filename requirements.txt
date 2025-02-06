@@ -1,1 +1,1 @@
-ansible-lint[community] == 25.1.1
+ansible-lint[community] == 25.1.2
