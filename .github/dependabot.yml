@@ -18,3 +18,12 @@ updates:
       - dependency-name: ansible-lint
         versions:
           - 5.0.0
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    assignees:
+      - yokogawa-k
+    labels:
+      - dependencies
