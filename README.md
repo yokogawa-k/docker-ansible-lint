@@ -29,4 +29,27 @@ with git ls-files
 $ docker run --rm -v ${PWD}:/work -w /work yokogawa/ansible-lint sh -c 'git ls-files -z "*.yml" | xargs -r -0 ansible-lint'
 ```
 
+## Maintenance
+
+### Update pinned APK package versions
+
+Dependabot updates `requirements.txt` (pip), but it does not update versions pinned in `apk add package=version` lines.
+Use the update script to refresh `APK_*_VERSION` in `Dockerfile` from the current base image:
+
+```console
+$ ./scripts/update-apk-pins.sh
+```
+
+If you only want to preview changes:
+
+```console
+$ ./scripts/update-apk-pins.sh --dry-run
+```
+
+After updating pins, validate:
+
+```console
+$ docker build -t yokogawa/ansible-lint:latest . && ./test/script.sh
+```
+
 [ansible-lint]: https://github.com/yokogawa-k/docker-ansible-lint/blob/main/Dockerfile

@@ -5,25 +5,10 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 10
-    # reviewers は廃止されていて、.github/CODEOWNERS で管理することが推奨されているので変更
     assignees:
       - yokogawa-k
     labels:
       - dependencies
-    ignore:
-      - dependency-name: ansible-lint[community]
-        versions:
-          - 5.0.2
-          - 5.0.6
-      - dependency-name: ansible-lint
-        versions:
-          - 5.0.0
-  - package-ecosystem: docker
-    directory: "/"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 10
-    assignees:
-      - yokogawa-k
-    labels:
-      - dependencies
+    # NOTE:
+    # Docker ecosystem updates only cover image tags such as FROM.
+    # Pinned APK package versions in Dockerfile RUN commands are maintained manually.
