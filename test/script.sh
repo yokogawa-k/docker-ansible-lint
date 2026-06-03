@@ -3,7 +3,7 @@
 set -e
 set -u
 
-TEST_DIR=$(cd $(dirname $0); pwd)
+TEST_DIR="$(cd "$(dirname "$0")"; pwd)"
 ANSIBLE_LINT_VERSION=$(grep ansible-lint requirements.txt | cut -f 3 -d " ")
 
 echo "Start test container"
@@ -22,7 +22,7 @@ else
 fi
 
 echo "Check ansible-lint version"
-RESULT=$(docker exec ansible-lint ansible-lint --version | cut -f-2 -d" ")
+RESULT=$(docker exec ansible-lint ansible-lint --version | head -n1 | cut -f-2 -d" ")
 EXPECT="ansible-lint ${ANSIBLE_LINT_VERSION}"
 echo "Want:   ${EXPECT}"
 echo "Reuslt: ${RESULT}"
@@ -34,7 +34,7 @@ else
 fi
 
 echo "Check simple playbook lint"
-docker cp ${TEST_DIR}/success/ ansible-lint:/work
+docker cp "${TEST_DIR}/success/" ansible-lint:/work
 docker exec ansible-lint sh -c 'set -o pipefail; find ./success/ -name "*.yml" | xargs -r ansible-lint -vvv --force-color'
 
 echo "!!! The test was successful !!!"

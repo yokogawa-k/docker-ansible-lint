@@ -1,19 +1,12 @@
 version: 2
 updates:
-- package-ecosystem: pip
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
-  reviewers:
-  - yokogawa-k
-  labels:
-  - dependencies
-  ignore:
-  - dependency-name: ansible-lint[community]
-    versions:
-    - 5.0.2
-    - 5.0.6
-  - dependency-name: ansible-lint
-    versions:
-    - 5.0.0
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    # NOTE:
+    # Docker ecosystem updates only cover image tags such as FROM.
+    # Pinned APK package versions in Dockerfile RUN commands are maintained manually.
