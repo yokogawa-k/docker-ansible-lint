@@ -2,10 +2,11 @@
 # vi: set ts=2 sw=2 sts=0 et:
 
 ---
-- hosts: all
+- name: Sample playbook for ansible-lint
+  hosts: all
   user: admin
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   roles:
     - common
