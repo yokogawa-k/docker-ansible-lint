@@ -20,23 +20,23 @@ dockerfile_path="Dockerfile"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -n|--dry-run)
-      dry_run=true
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    -*)
-      echo "Unknown option: $1" >&2
-      usage >&2
-      exit 1
-      ;;
-    *)
-      dockerfile_path="$1"
-      shift
-      ;;
+  -n | --dry-run)
+    dry_run=true
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  -*)
+    echo "Unknown option: $1" >&2
+    usage >&2
+    exit 1
+    ;;
+  *)
+    dockerfile_path="$1"
+    shift
+    ;;
   esac
 done
 
@@ -96,10 +96,10 @@ while IFS= read -r line; do
   if [[ "${line}" =~ ^ARG[[:space:]]+(APK_[A-Z0-9_]+_VERSION)=([^[:space:]]+) ]]; then
     old_version_by_arg["${BASH_REMATCH[1]}"]="${BASH_REMATCH[2]}"
   fi
-done < "${dockerfile_path}"
+done <"${dockerfile_path}"
 
 resolved_packages="$(
-  docker run --rm "${base_image}" sh -euc \
+  docker run --pull always --rm "${base_image}" sh -euc \
     "apk add --no-cache ${packages[*]} >/dev/null; for pkg in ${packages[*]}; do line=\$(apk search --exact --installed \"\$pkg\" | head -n1); [ -n \"\$line\" ] || { echo \"Failed to resolve \$pkg\" >&2; exit 1; }; echo \"\$pkg=\$line\"; done"
 )"
 
@@ -123,7 +123,7 @@ mapping_file="$(mktemp)"
 trap 'rm -f "${tmp_file}" "${mapping_file}"' EXIT
 
 for arg_name in "${args_in_order[@]}"; do
-  echo "${arg_name}=${new_version_by_arg[${arg_name}]}" >> "${mapping_file}"
+  echo "${arg_name}=${new_version_by_arg[${arg_name}]}" >>"${mapping_file}"
 done
 
 awk -F= '
@@ -138,7 +138,7 @@ awk -F= '
       print $0
     }
   }
-' "${mapping_file}" "${dockerfile_path}" > "${tmp_file}"
+' "${mapping_file}" "${dockerfile_path}" >"${tmp_file}"
 
 if [[ "${dry_run}" == "false" ]]; then
   mv "${tmp_file}" "${dockerfile_path}"
