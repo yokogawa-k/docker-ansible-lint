@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM python:3-alpine
+FROM python:3.14-alpine
 
 ARG APK_GIT_VERSION=2.54.0-r0
 ARG APK_MAKE_VERSION=4.4.1-r4
